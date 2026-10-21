@@ -34,7 +34,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
           file: ./build/reports/jacoco/test/jacocoTestReport.xml # optional
-          fail_ci_if_error: true # optional (default = false)
+          # Forks have no CODECOV_TOKEN and tokenless uploads are rate limited; only fail when a token is configured.
+          fail_ci_if_error: ${{ secrets.CODECOV_TOKEN != '' }}
           verbose: true
       - name: Slack notification when master build fails
         if: ${{ failure() && github.ref == 'refs/heads/master'}}
