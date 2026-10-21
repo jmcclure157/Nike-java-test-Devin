@@ -26,11 +26,13 @@ task integration(type: Test, description: 'Runs integration tests') {
     classpath = sourceSets.integration.runtimeClasspath
 }
 
-dependencies {
-    integrationCompile sourceSets.main.output
-    integrationCompile configurations.testCompile
-    integrationCompile sourceSets.test.output
-    integrationCompile 'com.fieldju:commons:1.1.0'
+configurations {
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntimeOnly.extendsFrom testRuntimeOnly
+}
 
-    integrationRuntime configurations.testRuntime
+dependencies {
+    integrationImplementation sourceSets.main.output
+    integrationImplementation sourceSets.test.output
+    integrationImplementation 'com.fieldju:commons:1.1.0'
 }

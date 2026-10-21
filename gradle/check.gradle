@@ -14,53 +14,48 @@
  * limitations under the License.
  */
 
-apply plugin: 'findbugs'
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'pmd'
-apply plugin: 'cobertura'
-apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
 apply plugin: 'org.owasp.dependencycheck'
 
 dependencyCheck {
     failOnError = false
-    format = 'ALL'
+    formats = ['ALL']
     failBuildOnCVSS = 11
 }
 
-findbugs {
+spotbugs {
     ignoreFailures = false
-    sourceSets = [ project.sourceSets.main ]
     excludeFilter = file("codequality/findbugs.xml")
 }
 
-pmd {
-    sourceSets = [ project.sourceSets.main ]
+// FindBugs only analyzed main; keep SpotBugs to the same scope.
+tasks.matching { it.name.startsWith('spotbugs') && it.name != 'spotbugsMain' }.configureEach {
+    enabled = false
 }
 
-tasks.withType(FindBugs) {
+tasks.named('spotbugsMain') {
     reports {
-        xml.withMessages = true
+        xml { required = true }
+        html { required = true }
     }
 }
 
-cobertura {
-    // https://github.com/stevesaliman/gradle-cobertura-plugin/blob/master/usage.md
-    coverageReportDir = new File("$buildDir/reports/cobertura")
-    coverageFormats = ['html', 'xml']
-    coverageIgnoreTrivial = true
-    coverageExcludes = []
+pmd {
+    toolVersion = '7.28.0'
+    sourceSets = [ project.sourceSets.main ]
+    ruleSets = []
+    ruleSetFiles = files("codequality/pmd-ruleset.xml")
 }
-test.finalizedBy(project.tasks.coberturaReport)
 
-task findbugsHtml {
-    group = "Verification"
-    description = "Creates a human readable Findbugs report"
-    doLast {
-        ant.xslt(in: file("$buildDir/reports/findbugs/main.xml"),
-                style: file('codequality/findbugs_default.xsl'),
-                out: new File("$buildDir/reports/findbugs/main.html"))
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
     }
 }
-findbugsMain.finalizedBy findbugsHtml
+test.finalizedBy(jacocoTestReport)
 
-tasks.check.dependsOn dependencyCheckAnalyze
-tasks.coveralls.dependsOn check
+// dependencyCheckAnalyze is no longer wired into `check`: it downloads the full NVD database, which now needs an
+// NVD API key and can take hours. Run `./gradlew dependencyCheckAnalyze` explicitly (see MIGRATION.md).
