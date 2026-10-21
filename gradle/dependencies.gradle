@@ -59,17 +59,17 @@ dependencies {
     shadow "org.slf4j:slf4j-api:1.7.36"
     shadow "com.google.code.gson:gson:2.13.2"
 
-    implementation "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
-    implementation "org.apache.commons:commons-lang3:3.20.0"
-    implementation "com.google.code.gson:gson:2.13.2"
-    implementation "org.slf4j:slf4j-api:1.7.36"
-    implementation "io.github.resilience4j:resilience4j-all:1.7.1"
-    implementation "io.github.resilience4j:resilience4j-retry:1.7.1"
+    api "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
+    api "org.apache.commons:commons-lang3:3.20.0"
+    api "com.google.code.gson:gson:2.13.2"
+    api "org.slf4j:slf4j-api:1.7.36"
+    api "io.github.resilience4j:resilience4j-all:1.7.1"
+    api "io.github.resilience4j:resilience4j-retry:1.7.1"
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
     compileOnly 'com.google.code.findbugs:annotations:3.0.1'
 
-    implementation "com.amazonaws:aws-java-sdk-core:${AWS_SDK_VERSION}"
-    implementation "com.amazonaws:aws-java-sdk-sts:${AWS_SDK_VERSION}"
+    api "com.amazonaws:aws-java-sdk-core:${AWS_SDK_VERSION}"
+    api "com.amazonaws:aws-java-sdk-sts:${AWS_SDK_VERSION}"
 
     testRuntimeOnly 'org.slf4j:slf4j-simple:1.7.36'
     testImplementation "junit:junit:4.13.2"
