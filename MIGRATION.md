@@ -82,6 +82,7 @@ Every `javax.*` import in `src/` was checked:
 7. **OWASP dependency-check no longer runs inside `check`.** Plugin 10.x downloads the full NVD database through the NVD API, which needs an API key (a secret, not committed) and can take a long time without one. It is still configured (`failBuildOnCVSS = 11`, i.e. report-only as before) and runs with `./gradlew dependencyCheckAnalyze` (set `nvd.apiKey` from an environment variable in CI if needed).
 8. **Coveralls plugin removed.** It is incompatible with Gradle 8 and CI does not use it; CI publishes coverage to Codecov.
 9. **`com.fieldju:commons` replaced by a local helper.** It was only published to JCenter. The integration tests used one method, `EnvUtils.getRequiredEnv`; it is now a package-private class in `src/integration/java` with the same contract.
+10. **Codecov upload only fails CI when `CODECOV_TOKEN` is set.** Tokenless uploads from a fork are rate limited (HTTP 429), which failed the job even though `assemble` and `check` passed. The upload still runs; with a token configured it is strict again.
 
 ## Tests that need a live Cerberus backend or AWS credentials
 
