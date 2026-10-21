@@ -34,5 +34,4 @@ configurations {
 dependencies {
     integrationImplementation sourceSets.main.output
     integrationImplementation sourceSets.test.output
-    integrationImplementation 'com.fieldju:commons:1.1.0'
 }
