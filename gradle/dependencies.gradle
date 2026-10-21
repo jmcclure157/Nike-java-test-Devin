@@ -18,13 +18,15 @@ repositories {
     mavenCentral()
 }
 
-def AWS_SDK_VERSION = '1.11.+'
-def JACKSON_VERSION = "2.13.3"
-def OKHTTP_VERSION = '4.9.3'
+def AWS_SDK_VERSION = '1.12.797'
+def JACKSON_VERSION = "2.19.4"
+def OKHTTP_VERSION = '4.12.0'
 
 configurations.all {
     resolutionStrategy {
+        force "com.fasterxml.jackson.core:jackson-core:${JACKSON_VERSION}"
         force "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
+        force "com.fasterxml.jackson.core:jackson-annotations:${JACKSON_VERSION}"
         force "com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:${JACKSON_VERSION}"
         force "ch.qos.logback:logback-core:1.2.10"
         force "ch.qos.logback:logback-classic:1.2.10"
@@ -52,15 +54,15 @@ dependencies {
  ***********************************************************************************************************************/
 
     // these will be added to the POM and excluded from the shadow jar
-    shadow "joda-time:joda-time:2.8.1"
-    shadow "org.apache.commons:commons-lang3:3.4"
-    shadow "org.slf4j:slf4j-api:1.7.25"
-    shadow "com.google.code.gson:gson:2.5"
+    shadow "joda-time:joda-time:2.14.4"
+    shadow "org.apache.commons:commons-lang3:3.20.0"
+    shadow "org.slf4j:slf4j-api:1.7.36"
+    shadow "com.google.code.gson:gson:2.13.2"
 
     implementation "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
-    implementation "org.apache.commons:commons-lang3:3.4"
-    implementation "com.google.code.gson:gson:2.5"
-    implementation "org.slf4j:slf4j-api:1.7.25"
+    implementation "org.apache.commons:commons-lang3:3.20.0"
+    implementation "com.google.code.gson:gson:2.13.2"
+    implementation "org.slf4j:slf4j-api:1.7.36"
     implementation "io.github.resilience4j:resilience4j-all:1.7.1"
     implementation "io.github.resilience4j:resilience4j-retry:1.7.1"
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
