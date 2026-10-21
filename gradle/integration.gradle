@@ -35,3 +35,5 @@ dependencies {
     integrationImplementation sourceSets.main.output
     integrationImplementation sourceSets.test.output
 }
+// The integration tests need a live Cerberus, so `build` only compiles them; run them with `./gradlew integration`.
+check.dependsOn integrationClasses
