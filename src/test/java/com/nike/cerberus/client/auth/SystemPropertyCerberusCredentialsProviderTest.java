@@ -18,21 +18,19 @@ package com.nike.cerberus.client.auth;
 
 import com.nike.cerberus.client.CerberusClientException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import uk.org.webcompere.systemstubs.rules.SystemPropertiesRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Tests the SystemPropertyCerberusCredentialsProvider class
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({SystemPropertyCerberusCredentialsProvider.class})
 public class SystemPropertyCerberusCredentialsProviderTest {
+
+    @Rule
+    public final SystemPropertiesRule systemProperties = new SystemPropertiesRule();
 
     private static final String TOKEN = "TOKEN";
 
@@ -45,8 +43,7 @@ public class SystemPropertyCerberusCredentialsProviderTest {
 
     @Test
     public void getCredentials_returns_creds_from_system_property_when_set() {
-        mockStatic(System.class);
-        when(System.getProperty(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY)).thenReturn(TOKEN);
+        systemProperties.set(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY, TOKEN);
 
         CerberusCredentials credentials = credentialsProvider.getCredentials();
 
@@ -56,16 +53,14 @@ public class SystemPropertyCerberusCredentialsProviderTest {
 
     @Test(expected = CerberusClientException.class)
     public void getCredentials_returns_empty_creds_object_when_sys_property_not_set() {
-        mockStatic(System.class);
-        when(System.getProperty(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY)).thenReturn(null);
+        systemProperties.remove(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY);
 
         credentialsProvider.getCredentials();
     }
 
     @Test(expected = CerberusClientException.class)
     public void getCredentials_returns_empty_creds_object_when_sys_property_is_blank() {
-        mockStatic(System.class);
-        when(System.getProperty(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY)).thenReturn("");
+        systemProperties.set(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY, "");
 
         credentialsProvider.getCredentials();
     }

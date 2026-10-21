@@ -19,23 +19,23 @@ package com.nike.cerberus.client.auth;
 import okhttp3.OkHttpClient;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import uk.org.webcompere.systemstubs.rules.EnvironmentVariablesRule;
+import uk.org.webcompere.systemstubs.rules.SystemPropertiesRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Tests the DefaultCerberusCredentialsProviderChain class
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({EnvironmentCerberusCredentialsProvider.class, SystemPropertyCerberusCredentialsProvider.class})
-@PowerMockIgnore("javax.net.ssl.*")
 public class DefaultCerberusCredentialsProviderChainTest {
+
+    @Rule
+    public final EnvironmentVariablesRule environmentVariables = new EnvironmentVariablesRule();
+
+    @Rule
+    public final SystemPropertiesRule systemProperties = new SystemPropertiesRule();
 
     private static final String ENV_VALUE = "ENV";
 
@@ -58,9 +58,8 @@ public class DefaultCerberusCredentialsProviderChainTest {
 
     @Test
     public void env_set_credentials_always_returned_when_sys_property_is_also_set() {
-        mockStatic(System.class);
-        when(System.getenv(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY)).thenReturn(ENV_VALUE);
-        when(System.getProperty(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY)).thenReturn(SYS_VALUE);
+        environmentVariables.set(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY, ENV_VALUE);
+        systemProperties.set(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY, SYS_VALUE);
 
         CerberusCredentials credentials = credentialsProviderChain.getCredentials();
 
@@ -70,9 +69,8 @@ public class DefaultCerberusCredentialsProviderChainTest {
 
     @Test
     public void sys_value_set_if_env_is_not_set() {
-        mockStatic(System.class);
-        when(System.getenv(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY)).thenReturn("");
-        when(System.getProperty(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY)).thenReturn(SYS_VALUE);
+        environmentVariables.set(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY, "");
+        systemProperties.set(SystemPropertyCerberusCredentialsProvider.CERBERUS_TOKEN_SYS_PROPERTY, SYS_VALUE);
 
         CerberusCredentials credentials = credentialsProviderChain.getCredentials();
 
