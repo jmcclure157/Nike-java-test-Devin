@@ -18,21 +18,19 @@ package com.nike.cerberus.client.auth;
 
 import com.nike.cerberus.client.CerberusClientException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import uk.org.webcompere.systemstubs.rules.EnvironmentVariablesRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Tests the EnvironmentCerberusCredentialsProvider class
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({EnvironmentCerberusCredentialsProvider.class})
 public class EnvironmentCerberusCredentialsProviderTest {
+
+    @Rule
+    public final EnvironmentVariablesRule environmentVariables = new EnvironmentVariablesRule();
 
     private static final String TOKEN = "TOKEN";
 
@@ -45,8 +43,7 @@ public class EnvironmentCerberusCredentialsProviderTest {
 
     @Test
     public void getCredentials_returns_creds_from_env_when_set() {
-        mockStatic(System.class);
-        when(System.getenv(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY)).thenReturn(TOKEN);
+        environmentVariables.set(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY, TOKEN);
 
         CerberusCredentials credentials = credentialsProvider.getCredentials();
 
@@ -56,16 +53,14 @@ public class EnvironmentCerberusCredentialsProviderTest {
 
     @Test(expected = CerberusClientException.class)
     public void getCredentials_throws_client_exception_when_not_set() {
-        mockStatic(System.class);
-        when(System.getenv(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY)).thenReturn(null);
+        environmentVariables.remove(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY);
 
         credentialsProvider.getCredentials();
     }
 
     @Test(expected = CerberusClientException.class)
     public void getCredentials_returns_empty_creds_object_when_env_variable_is_blank() {
-        mockStatic(System.class);
-        when(System.getenv(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY)).thenReturn("");
+        environmentVariables.set(EnvironmentCerberusCredentialsProvider.CERBERUS_TOKEN_ENV_PROPERTY, "");
 
         credentialsProvider.getCredentials();
     }

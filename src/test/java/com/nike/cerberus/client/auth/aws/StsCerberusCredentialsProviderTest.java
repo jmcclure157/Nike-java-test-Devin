@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Tests the StsCerberusCredentialsProvider class
@@ -56,7 +56,9 @@ public class StsCerberusCredentialsProviderTest {
     @Before
     public void setUp() {
 
-        cerberusUrl = mock(String.class);
+        // Was mock(String.class): Mockito 5 cannot mock String. That mock behaved as a blank string, which
+        // get_token_throws_exception_when_url_is_blank relies on, so use an actual blank string.
+        cerberusUrl = "";
 
         chain = mock(AWSCredentialsProviderChain.class);
 

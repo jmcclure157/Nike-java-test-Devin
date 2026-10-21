@@ -18,13 +18,13 @@ buildscript {
     apply from: file('gradle/buildscript.gradle'), to: buildscript
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
-apply plugin: "com.github.johnrengelman.shadow"
+apply plugin: 'com.gradleup.shadow'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
 
 task copyProjectVersion() {
     def releaseVersion = version

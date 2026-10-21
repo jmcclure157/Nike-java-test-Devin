@@ -13,4 +13,18 @@
         </Or>
         <Bug code="NP" />
     </Match>
+    <!--
+        Added in the Java 21 migration (FindBugs 3.0.1 -> SpotBugs 4.9). These detectors are new or much broader in
+        SpotBugs 4.x than in FindBugs 3 and flag long-standing code that FindBugs accepted. Fixing them would mean
+        API/behavior changes (defensive copies, static fields, final classes), which is out of scope for the
+        migration. See MIGRATION.md.
+    -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2,CT_CONSTRUCTOR_THROW" />
+    </Match>
+    <Match>
+        <Class name="com.nike.cerberus.client.auth.aws.BaseAwsCredentialsProvider" />
+        <Field name="paddingTimeInSeconds" />
+        <Bug pattern="SS_SHOULD_BE_STATIC" />
+    </Match>
 </FindBugsFilter>
